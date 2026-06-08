@@ -8,20 +8,21 @@ import java.math.BigDecimal;
 import java.util.List;
 import com.example.banking.dto.accountNumberRequest;
 import com.example.banking.dto.changeStatusRequest;
+import com.example.banking.dto.*;
 
 public interface accountService {
 
     int countByUserIdAndAccountType(long userId,String accountType);
 
-    void registerAccount(long userId,String accountType);
+    accountRegisterResponse registerAccount(accountRegisterRequest request);
 
     void deposit(depositWithdrawRequest request);
 
     void withdraw(depositWithdrawRequest request);
 
-    BigDecimal checkBalance(accountNumberRequest request);
+    checkBalanceResponse checkBalance(accountNumberRequest request);
 
-    void transferAmount(transferRequest transferRequest);
+    transferResponse transferAmount(transferRequest transferRequest);
 
     List<Transaction> findByAccountNumber(accountNumberRequest request);
 

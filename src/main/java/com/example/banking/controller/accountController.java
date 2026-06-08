@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.banking.dto.depositWithdrawRequest;
 import com.example.banking.service.accountService;
 import com.example.banking.dto.accountNumberRequest;
+import com.example.banking.dto.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,8 +24,8 @@ public class accountController {
     }
 
     @PostMapping("/register")
-    public void registerAccount(@RequestBody Account account) {
-        accountService.registerAccount(account.getUserId(),account.getAccountType());
+    public accountRegisterResponse registerAccount(@RequestBody accountRegisterRequest request) {
+        return accountService.registerAccount(request);
     }
 
     @GetMapping("/test")
@@ -40,12 +41,12 @@ public class accountController {
     @PostMapping("/withdraw")
     public void withdrawAmount(@RequestBody depositWithdrawRequest request) { accountService.withdraw(request); }
 
-    @PostMapping("/checkBalance")
-    public BigDecimal checkBalance(@RequestBody accountNumberRequest request) { return accountService.checkBalance(request); }
+    @PostMapping("/checkbalance")
+    public checkBalanceResponse checkBalance(@RequestBody accountNumberRequest request) { return accountService.checkBalance(request); }
 
     @PostMapping("/transfer")
-    public void transferAmount(@RequestBody transferRequest request) {
-        accountService.transferAmount(request);
+    public transferResponse transferAmount(@RequestBody transferRequest request) {
+        return accountService.transferAmount(request);
     }
 
     @PostMapping("/transactions")

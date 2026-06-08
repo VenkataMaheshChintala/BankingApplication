@@ -1,14 +1,10 @@
 package com.example.banking.service;
 
-import com.example.banking.entity.Transaction;
 import com.example.banking.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.banking.dto.loginRequest;
 import com.example.banking.dto.loginResponse;
-import com.example.banking.dto.registerResponse;
-import com.example.banking.dto.registerRequest;
-
-import java.util.List;
+import com.example.banking.dto.userRegisterResponse;
+import com.example.banking.dto.userRegisterRequest;
 
 public interface userService {
 
@@ -18,7 +14,9 @@ public interface userService {
 
     User findByPhoneNumber(String phoneNumber);
 
+    User findByUserName(String userName);
+
     User findByUserId(long userId);
 
-    registerResponse registerUser(registerRequest request);
+    userRegisterResponse registerUser(userRegisterRequest request);
 }

@@ -4,12 +4,14 @@ import com.example.banking.dto.changeStatusRequest;
 import com.example.banking.dto.transferRequest;
 import com.example.banking.entity.Account;
 import com.example.banking.entity.Transaction;
+import com.example.banking.entity.User;
 import com.example.banking.exception.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import com.example.banking.repository.accountRepository;
-import com.example.banking.dto.depositWithdrawRequest;
+import com.example.banking.dto.*;
 import com.example.banking.repository.transactionRepository;
+import com.example.banking.dto.accountRegisterRequest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,26 +36,38 @@ public class accountServiceImpl implements accountService{
         return accountRepository.countByUserIdAndAccountType(userId,accountType);
     }
 
+
+
     @Override
     @Transactional
-    public void registerAccount(long userId, String accountType) {
-        if(userService.findByUserId(userId) != null) {
-            if(accountRepository.countByUserIdAndAccountType(userId,accountType) >= 2 && accountType.equals("SAVINGS")) {
-                throw new accountCantBeCreated("Account cant be created as you already have 2 open savings accounts");
-            } else if(accountRepository.countByUserIdAndAccountType(userId,accountType) >= 1 && accountType.equals("CURRENT")) {
-                throw new accountCantBeCreated("Account cant be created as you already have 1 open current accounts");
+    public accountRegisterResponse registerAccount(accountRegisterRequest request) {
+        String username = request.getUsername();
+        String accountType = request.getAccountType();
+        User user = userService.findByUserName(username);
+        accountRegisterResponse response = new accountRegisterResponse();
+        if(user != null) {
+            if(accountRepository.countByUserIdAndAccountType(user.getUserId(),accountType) >= 2 && accountType.equals("SAVINGS")) {
+                response.setStatus(false);
+                response.setMessage("Account cant be created as you already have 2 open savings accounts");
+            } else if(accountRepository.countByUserIdAndAccountType(user.getUserId(),accountType) >= 1 && accountType.equals("CURRENT")) {
+                response.setStatus(false);
+                response.setMessage("Account cant be created as you already have 1 open current accounts");
             } else {
                 if(accountRepository.count() == 0) {
-                    Account acc = new Account(1000000001,userId,accountType);
+                    Account acc = new Account(1000000001,user.getUserId(),accountType);
                     accountRepository.save(acc);
                 } else {
-                    Account acc = new Account(accountRepository.getMaxAccountNumber()+1,userId,accountType);
+                    Account acc = new Account(accountRepository.getMaxAccountNumber()+1,user.getUserId(),accountType);
                     accountRepository.save(acc);
                 }
+                response.setStatus(true);
+                response.setMessage("Account creation Successful!");
             }
         } else {
-            throw new userIdNotFound("No user found with userId : " + userId);
+            response.setStatus(false);
+            response.setMessage("No user found with username : " + request.getUsername());
         }
+        return response;
     }
 
     @Override
@@ -107,35 +121,48 @@ public class accountServiceImpl implements accountService{
     }
 
     @Override
-    public BigDecimal checkBalance(accountNumberRequest request) {
+    public checkBalanceResponse checkBalance(accountNumberRequest request) {
+        checkBalanceResponse response = new checkBalanceResponse();
         Account acc = accountRepository.findByAccountNumber(request.getAccountNumber());
         if(acc != null) {
-            return acc.getBalance();
+            response.setBalance(acc.getBalance());
+            response.setMessage("Fetch successful!");
+            response.setStatus(true);
         } else {
-            throw new accountNotFound("No account found with the accountNumber : " + request.getAccountNumber());
+            response.setStatus(false);
+            response.setBalance(BigDecimal.ZERO);
+            response.setMessage("No account found with the accountNumber : " + request.getAccountNumber());
         }
+        return response;
     }
 
     @Override
     @Transactional
-    public void transferAmount(transferRequest transferRequest) {
+    public transferResponse transferAmount(transferRequest transferRequest) {
         long senderAccountNumber = transferRequest.getSenderAccountNumber();
         long receiverAccountNumber = transferRequest.getReceiverAccountNumber();
         Account senderAccount = accountRepository.findByAccountNumber(senderAccountNumber);
         Account receiverAccount = accountRepository.findByAccountNumber(receiverAccountNumber);
+        transferResponse response = new transferResponse();
         BigDecimal amount = transferRequest.getAmount();
         if(senderAccount == null) {
-            throw new accountNotFound("Sender account not found with accountNumber " + senderAccountNumber);
+            response.setStatus(false);
+            response.setMessage("Sender account not found with accountNumber " + senderAccountNumber);
         } else if(receiverAccount == null) {
-            throw new accountNotFound("Receiver account not found with accountNumber " + receiverAccountNumber);
+            response.setStatus(false);
+            response.setMessage("Receiver account not found with accountNumber " + receiverAccountNumber);
         } else {
             if(senderAccount.getStatus().equals("ACTIVE") && receiverAccount.getStatus().equals("ACTIVE")) {
                 if (amount.compareTo(BigDecimal.ZERO) < 1) {
-                    throw new unableToDepositWithdraw("Cant transfer negative funds or zero");
+                    response.setStatus(false);
+                    response.setMessage("Cant transfer negative funds or zero");
                 } else {
                     if (senderAccount.getBalance().subtract(amount).compareTo(BigDecimal.ZERO) < 1) {
-                        throw new insufficientFunds("No sufficient funds to transfer money");
+                        response.setStatus(false);
+                        response.setMessage("No sufficient funds to transfer money");
                     } else {
+                        response.setStatus(true);
+                        response.setMessage("Transfer successful!");
                         receiverAccount.setBalance(receiverAccount.getBalance().add(amount));
                         senderAccount.setBalance(senderAccount.getBalance().subtract(amount));
                         Transaction senderTransaction = new Transaction(senderAccountNumber, "TRANSFER_OUT", amount);
@@ -147,9 +174,11 @@ public class accountServiceImpl implements accountService{
                     }
                 }
             } else {
-                throw new unableToDepositWithdraw("Unable to transfer money as account is not active ");
+                response.setStatus(true);
+                response.setMessage("Unable to transfer money as account is not active ");
             }
         }
+        return response;
     }
 
     @Override

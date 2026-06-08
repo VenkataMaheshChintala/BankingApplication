@@ -1,20 +1,20 @@
 package com.example.banking.dto;
 
-public class registerRequest {
+public class userRegisterRequest {
 
     String username;
     String password;
     String phone;
     String email;
 
-    public registerRequest(String username, String password, String phone, String email) {
+    public userRegisterRequest(String username, String password, String phone, String email) {
         this.username = username;
         this.password = password;
         this.phone = phone;
         this.email = email;
     }
 
-    public registerRequest() {
+    public userRegisterRequest() {
     }
 
     public String getUsername() {

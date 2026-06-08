@@ -5,8 +5,8 @@ import com.example.banking.entity.User;
 import com.example.banking.repository.userRepository;
 import com.example.banking.dto.loginResponse;
 import org.springframework.stereotype.Service;
-import com.example.banking.dto.registerResponse;
-import com.example.banking.dto.registerRequest;
+import com.example.banking.dto.userRegisterResponse;
+import com.example.banking.dto.userRegisterRequest;
 
 @Service
 public class userServiceImpl implements userService{
@@ -47,15 +47,17 @@ public class userServiceImpl implements userService{
     }
 
     @Override
-    public registerResponse registerUser(registerRequest request) {
-        registerResponse response = new registerResponse();
-        System.out.println(request.getPhone());
+    public User findByUserName(String userName) {
+        return userRepository.findByUsername(userName);
+    }
+
+    @Override
+    public userRegisterResponse registerUser(userRegisterRequest request) {
+        userRegisterResponse response = new userRegisterResponse();
         User user = new User(request.getUsername(),request.getPassword(),request.getPhone(),request.getEmail());
-        System.out.println(user.getPhoneNumber());
         if((findByEmail(request.getEmail()) == null) && (findByPhoneNumber(request.getPhone()) == null)) {
             response.setStatus(true);
             response.setMessage("Registration Successful");
-            System.out.println(user.getPhoneNumber());
             userRepository.save(user);
         } else {
             response.setStatus(false);

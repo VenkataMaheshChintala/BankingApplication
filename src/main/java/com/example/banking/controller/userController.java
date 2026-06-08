@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import com.example.banking.service.userService;
 import com.example.banking.dto.loginRequest;
 import com.example.banking.dto.loginResponse;
-import com.example.banking.dto.registerResponse;
-import com.example.banking.dto.registerRequest;
+import com.example.banking.dto.userRegisterResponse;
+import com.example.banking.dto.userRegisterRequest;
 
 @RestController
 @RequestMapping("/userapi")
@@ -24,8 +24,7 @@ public class userController {
     }
 
     @PostMapping("/register")
-    public registerResponse registerUser(@RequestBody registerRequest request) {
-        System.out.println(request.getPhone());
+    public userRegisterResponse registerUser(@RequestBody userRegisterRequest request) {
         return userService.registerUser(request);
     }
 

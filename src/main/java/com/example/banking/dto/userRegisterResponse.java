@@ -1,14 +1,14 @@
 package com.example.banking.dto;
 
-public class registerResponse {
+public class userRegisterResponse {
 
     boolean status;
     String message;
 
-    public registerResponse() {
+    public userRegisterResponse() {
     }
 
-    public registerResponse(boolean status, String message) {
+    public userRegisterResponse(boolean status, String message) {
         this.status = status;
         this.message = message;
     }
