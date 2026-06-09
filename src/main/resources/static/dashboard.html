@@ -220,7 +220,7 @@
                             <option value="CURRENT">Current</option>
                         </select>
                     </div>
-                    <button>Create Account</button>
+                    <button onclick="createAccount()">Create Account</button>
                 </div>
                 <div class="card">
                     <h3>Quick Actions</h3>
@@ -269,6 +269,30 @@
         </div>
 
         <script>
+            async function createAccount() {
+                var username = document.getElementById('username').value
+                var accountType = document.getElementById('accountType').value
+
+                const response = await fetch('/accountapi/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        accountType: accountType,
+                    }),
+                })
+
+                const result = await response.json()
+
+                if (result.success) {
+                    alert('Account creation successful!')
+                    window.location.href = '/dashboard.html'
+                } else {
+                    alert('Account creation failed: ' + result.message)
+                }
+            }
             function showpage(pageId,element) {
                 const pages = document.querySelectorAll('.page');
                 pages.forEach(page => {

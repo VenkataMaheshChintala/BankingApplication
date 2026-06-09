@@ -4,6 +4,7 @@ import com.example.banking.dto.loginRequest;
 import com.example.banking.entity.User;
 import com.example.banking.repository.userRepository;
 import com.example.banking.dto.loginResponse;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.banking.dto.userRegisterResponse;
 import com.example.banking.dto.userRegisterRequest;
@@ -12,9 +13,11 @@ import com.example.banking.dto.userRegisterRequest;
 public class userServiceImpl implements userService{
 
     private userRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public userServiceImpl(userRepository userRepository) {
+    public userServiceImpl(userRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -25,7 +28,7 @@ public class userServiceImpl implements userService{
             response.setSuccess(false);
             response.setMessage("No user exists with username : " + request.getUsername());
         } else {
-            if(user.getPassword().equals(request.getPassword())) {
+            if(passwordEncoder.matches(request.getPassword(),user.getPassword())) {
                 response.setSuccess(true);
                 response.setMessage("Login successful");
             } else {
@@ -54,8 +57,9 @@ public class userServiceImpl implements userService{
     @Override
     public userRegisterResponse registerUser(userRegisterRequest request) {
         userRegisterResponse response = new userRegisterResponse();
-        User user = new User(request.getUsername(),request.getPassword(),request.getPhone(),request.getEmail());
         if((findByEmail(request.getEmail()) == null) && (findByPhoneNumber(request.getPhone()) == null)) {
+            User user = new User(request.getUsername(),"",request.getPhone(),request.getEmail());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
             response.setStatus(true);
             response.setMessage("Registration Successful");
             userRepository.save(user);

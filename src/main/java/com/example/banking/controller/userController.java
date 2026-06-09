@@ -10,6 +10,7 @@ import com.example.banking.dto.userRegisterRequest;
 
 @RestController
 @RequestMapping("/userapi")
+@CrossOrigin(origins = "*")
 public class userController {
 
     private userService userService;
