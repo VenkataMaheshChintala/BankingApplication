@@ -4,6 +4,13 @@
         <meta charset="UTF-8" />
         <title>Banking Dashboard</title>
 
+        <script>
+            const token = localStorage.getItem("token");
+            if(!token) {
+                window.location.href = "/login.html";
+            }
+        </script>
+
         <style>
             * {
                 margin: 0;
@@ -236,9 +243,9 @@
                 <div class="card">
                     <div class="form-group">
                         <label>Account Number</label>
-                        <input type="text" placeholder="Enter Account Number">
+                        <input type="text" placeholder="Enter Account Number" id="checkBalanceAccountNumber">
                     </div>
-                    <button>Check Balance</button>
+                    <button onclick="checkBalance()">Check Balance</button>
                     <div class="balance-result">
                         ₹ 0.00
                     </div>
@@ -269,14 +276,41 @@
         </div>
 
         <script>
+            async function checkBalance() {
+                var accno = document.getElementById('checkBalanceAccountNumber').value;
+                const token = localStorage.getItem("token");
+
+                const response = await fetch('/accountapi/checkbalance', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type' : 'applicatiom/json',
+                        'Authorization' : 'Bearer' + token
+                    },
+                    body: JSON.stringify({
+                        accountNumber: accno
+                    }),
+                }) 
+
+                const result = await response.json();
+
+                if(result.status) {
+                    alert('Balance Check fetch successful');
+                    const checkBalanceResultDiv = document.getElementsByClassName("balance-result");
+                    checkBalanceResultDiv.textContent = result.balance;
+                } else {
+                    alert('Balance Check fetch failed : ' + response.message);
+                }
+            }
             async function createAccount() {
                 var username = document.getElementById('username').value
                 var accountType = document.getElementById('accountType').value
+                const token = localStorage.getItem("token");
 
                 const response = await fetch('/accountapi/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                         "Authorization": "Bearer " + token
                     },
                     body: JSON.stringify({
                         username: username,

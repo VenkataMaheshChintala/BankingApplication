@@ -114,23 +114,30 @@
         async function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            try {
+                const response = await fetch('/userapi/login', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        password
+                    })
+                });
+                console.log("Response Received");
+                const data = await response.json();
+                console.log("Data");
+                console.log(data);
 
-            const response = await fetch('/userapi/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            });
-
-            const data = await response.json();
-            console.log(data);
-
-            if(data.success) {
-                alert('Login successful!');
-                window.location.href = '/dashboard.html';
-            } else {
-                alert('Login failed: ' + data.message);
+                if(data.success) {
+                    localStorage.setItem("token",data.token);
+                    window.location.href = '/dashboard.html';
+                } else {
+                    alert('Login failed : ' + data.message);
+                }
+            } catch (error) {
+                console.log(error);
             }
         }
     </script>
