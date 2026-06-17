@@ -283,7 +283,7 @@
                 const response = await fetch('/accountapi/checkbalance', {
                     method: 'POST',
                     headers: {
-                        'Content-Type' : 'applicatiom/json',
+                        'Content-Type' : 'application/json',
                         'Authorization' : 'Bearer' + token
                     },
                     body: JSON.stringify({
@@ -295,8 +295,8 @@
 
                 if(result.status) {
                     alert('Balance Check fetch successful');
-                    const checkBalanceResultDiv = document.getElementsByClassName("balance-result");
-                    checkBalanceResultDiv.textContent = result.balance;
+                    const checkBalanceResultDiv = document.querySelector(".balance-result");
+                    checkBalanceResultDiv.textContent = "₹" + result.balance;
                 } else {
                     alert('Balance Check fetch failed : ' + response.message);
                 }

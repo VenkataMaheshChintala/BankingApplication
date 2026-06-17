@@ -25,12 +25,32 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         System.out.println("JWT FILTER HIT");
+        System.out.println("URI : " + request.getRequestURI());
         String authHeader = request.getHeader("Authorization");
-        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+        System.out.println("HEADER = [" + authHeader + "]");
+        if(authHeader == null || !authHeader.startsWith("Bearer")) {
+            System.out.println("Function returned!");
             filterChain.doFilter(request,response);
             return;
         }
-        String token = authHeader.substring(7);
+        String token = "";
+        try {
+            token = authHeader.substring(6);
+            System.out.println("STEP 1 : ");
+            System.out.println("TOKEN = " + token);
+        } catch (Exception e) {
+            System.out.println("SUBSTRING FAILED");
+            e.printStackTrace();
+        }
+        try {
+            System.out.println("STEP 2 : ");
+            System.out.println("USERNAME : " + jwtService.extractUsername(token));
+            System.out.println("STEP 3 : ");
+            System.out.println("VALID : " + jwtService.validateToken(token));
+        } catch (Exception e) {
+            System.out.println("STEP FAILED");
+            e.printStackTrace();
+        }
         if(jwtService.validateToken(token)) {
             String username = jwtService.extractUsername(token);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username,null, Collections.emptyList());
