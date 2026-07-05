@@ -273,6 +273,7 @@
 
                 if(data.success) {
                     localStorage.setItem("token",data.token);
+                    localStorage.setItem("username",username);
                     window.location.href = '/dashboard.html';
                 } else {
                     alert('Login failed : ' + data.message);

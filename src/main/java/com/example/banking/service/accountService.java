@@ -2,14 +2,16 @@ package com.example.banking.service;
 
 import com.example.banking.dto.transferRequest;
 import com.example.banking.dto.depositWithdrawRequest;
+import com.example.banking.entity.Account;
 import com.example.banking.entity.Transaction;
 
-import java.math.BigDecimal;
 import java.util.List;
 import com.example.banking.dto.accountNumberRequest;
 import com.example.banking.dto.changeStatusRequest;
 import com.example.banking.dto.*;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface accountService {
 
     int countByUserIdAndAccountType(long userId,String accountType);
@@ -27,5 +29,7 @@ public interface accountService {
     List<Transaction> findByAccountNumber(accountNumberRequest request);
 
     void changeStatus(changeStatusRequest request);
+
+    List<Account> findByUserId(long userId);
 
 }

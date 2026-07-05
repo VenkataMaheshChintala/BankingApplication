@@ -359,7 +359,7 @@
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
-                Transaction History
+                <p onclick="loadAccounts()">Transaction History</p>
             </div>
         </aside>
 
@@ -459,54 +459,69 @@
                             id="checkBalanceAccountNumber"
                         />
                     </div>
-                    <button class="primary-btn" onclick="checkBalance()">
+                    <!-- <button class="primary-btn" onclick="checkBalance()">
+                        Check Balance
+                    </button> -->
+                    <!-- <button class="primary-btn" onclick="loadAccounts()">
+                        Check Balance
+                    </button> -->
+                    <button class="primary-btn" onclick="loadAccounts()">
                         Check Balance
                     </button>
-
                     <div class="balance-result">₹ 0.00</div>
                 </div>
             </div>
 
             <div id="history" class="page">
-                <h1 class="page-title">Transaction History</h1>
-                <div class="card">
-                    <h3>View Statement</h3>
-                    <div class="form-group">
-                        <label>Account Number</label>
-                        <input type="text" placeholder="Enter Account Number" />
-                    </div>
-                    <button class="primary-btn" style="margin-bottom: 24px">
-                        Fetch Transactions
-                    </button>
-
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Transaction Type</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td
-                                    colspan="3"
-                                    style="
-                                        text-align: center;
-                                        color: var(--text-muted);
-                                        padding: 32px;
-                                    "
-                                >
-                                    No transactions to display
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <h1 class="page-title" >Transaction History</h1>
+                <div class="card" id="userAccounts">
                 </div>
             </div>
         </main>
 
         <script>
+            async function loadAccounts() {
+                const token = localStorage.getItem("token");
+                const username = localStorage.getItem("username");
+                const response = await fetch("/accountapi/accounts", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        "Authorization" : "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                    })
+                });
+                
+                console.log("Inside the function loadAccounts");
+                const result = await response.json();
+                const userAccountsdiv = document.getElementById("userAccounts");
+                console.log("response receievd");
+                // need to fill displaying the accounts
+
+                if(!result.status) {
+                    alert(response.message);
+                } else {
+                    userAccountsdiv.innerHTML="";
+                    result.accounts.forEach(account => {
+
+                        const div = document.createElement("div");
+
+                        div.innerHTML = `<h3>${account.accountType}</h3>
+                            <p>Account Number: ${account.accountNumber}</p>
+                            <p>Status : ${account.status}</p>
+                            <hr>`;
+
+                        userAccountsdiv.appendChild(div);
+                    })
+                }
+
+                
+            }
+
+
+            // function to check the balance
             async function checkBalance() {
                 var accno = document.getElementById(
                     'checkBalanceAccountNumber',

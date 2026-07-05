@@ -197,4 +197,11 @@ public class accountServiceImpl implements accountService{
             throw new accountNotFound("No account found with accountNumber : " + accountNumber);
         }
     }
+
+    @Override
+    public List<Account> findByUserId(long userId) {
+        User user = userService.findByUserId(userId);
+        List<Account> accounts = accountRepository.findAllByuserId(user.getUserId());
+        return accounts;
+    }
 }

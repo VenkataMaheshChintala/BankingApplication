@@ -27,7 +27,8 @@ public class securityConfig {
                         "/registeruser.html",
                         "/userapi/login",
                         "/userapi/register",
-                        "/dashboard.html"
+                        "/dashboard.html",
+                        "/accountapi/accounts"
                 ).permitAll().requestMatchers(
                         "/accountapi/**"
                 ).authenticated().anyRequest().permitAll());

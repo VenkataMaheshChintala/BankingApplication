@@ -5,7 +5,9 @@ import com.example.banking.dto.loginRequest;
 import com.example.banking.dto.loginResponse;
 import com.example.banking.dto.userRegisterResponse;
 import com.example.banking.dto.userRegisterRequest;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface userService {
 
     loginResponse login(loginRequest request);
