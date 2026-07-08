@@ -557,11 +557,16 @@
                 }
             }
 
+            function showPasswordDialog(accountNumber) {
+                const password = prompt("Enter your password");
+                if(password == null) {
+                    return;
+                }
+                checkBalance(accountNumber,password);
+            }
+
             // function to check the balance
-            async function checkBalance() {
-                var accno = document.getElementById(
-                    'checkBalanceAccountNumber',
-                ).value
+            async function checkBalance(accountNumber,password) {
                 const token = localStorage.getItem('token')
 
                 const response = await fetch('/accountapi/checkbalance', {
@@ -571,17 +576,15 @@
                         Authorization: 'Bearer' + token,
                     },
                     body: JSON.stringify({
-                        accountNumber: accno,
+                        accountNumber: accountNumber,
+                        password: password
                     }),
                 })
-
+                console.log("Inside check balance, request sent")
                 const result = await response.json()
-
+                console.log("Response received");
                 if (result.status) {
-                    alert('Balance Check fetch successful')
-                    const checkBalanceResultDiv =
-                        document.querySelector('.balance-result')
-                    checkBalanceResultDiv.textContent = '₹' + result.balance
+                    alert("Balance : " + result.balance);
                 } else {
                     alert('Balance Check fetch failed : ' + response.message)
                 }

@@ -7,6 +7,7 @@ import com.example.banking.entity.Transaction;
 import com.example.banking.entity.User;
 import com.example.banking.exception.*;
 import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.banking.repository.accountRepository;
 import com.example.banking.dto.*;
@@ -23,12 +24,14 @@ public class accountServiceImpl implements accountService{
     accountRepository accountRepository;
     transactionRepository transactionRepository;
     userService userService;
+    private final PasswordEncoder passwordEncoder;
 
 
-    public accountServiceImpl(accountRepository accountRepository,userService userService,transactionRepository transactionRepository) {
+    public accountServiceImpl(accountRepository accountRepository,userService userService,transactionRepository transactionRepository,PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.userService = userService;
         this.transactionRepository = transactionRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -121,13 +124,27 @@ public class accountServiceImpl implements accountService{
     }
 
     @Override
-    public checkBalanceResponse checkBalance(accountNumberRequest request) {
+    public checkBalanceResponse checkBalance(checkBalanceRequest request) {
         checkBalanceResponse response = new checkBalanceResponse();
         Account acc = accountRepository.findByAccountNumber(request.getAccountNumber());
         if(acc != null) {
-            response.setBalance(acc.getBalance());
-            response.setMessage("Fetch successful!");
-            response.setStatus(true);
+            long userId = acc.getUserId();
+            User user = userService.findByUserId(userId);
+            if(user != null) {
+                if(!passwordEncoder.matches(request.getPassword(),user.getPassword())) {
+                    response.setStatus(false);
+                    response.setBalance(BigDecimal.ZERO);
+                    response.setMessage("Incorrect Password");
+                } else {
+                    response.setStatus(true);
+                    response.setBalance(acc.getBalance());
+                    response.setMessage("Fetch Successful!");
+                }
+            } else {
+                response.setStatus(false);
+                response.setBalance(BigDecimal.ZERO);
+                response.setMessage("No user Id found");
+            }
         } else {
             response.setStatus(false);
             response.setBalance(BigDecimal.ZERO);

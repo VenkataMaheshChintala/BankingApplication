@@ -49,7 +49,7 @@ public class accountController {
     public void withdrawAmount(@RequestBody depositWithdrawRequest request) { accountService.withdraw(request); }
 
     @PostMapping("/checkbalance")
-    public checkBalanceResponse checkBalance(@RequestBody accountNumberRequest request) { return accountService.checkBalance(request); }
+    public checkBalanceResponse checkBalance(@RequestBody checkBalanceRequest request) { return accountService.checkBalance(request); }
 
     @PostMapping("/transfer")
     public transferResponse transferAmount(@RequestBody transferRequest request) {

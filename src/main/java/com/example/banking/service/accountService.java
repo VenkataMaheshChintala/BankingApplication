@@ -22,7 +22,7 @@ public interface accountService {
 
     void withdraw(depositWithdrawRequest request);
 
-    checkBalanceResponse checkBalance(accountNumberRequest request);
+    checkBalanceResponse checkBalance(checkBalanceRequest request);
 
     transferResponse transferAmount(transferRequest transferRequest);
 

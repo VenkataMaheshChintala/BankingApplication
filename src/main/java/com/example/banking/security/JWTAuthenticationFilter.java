@@ -35,7 +35,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
         String token = "";
         try {
-            token = authHeader.substring(6);
+            token = authHeader.substring(6).trim();
             System.out.println("STEP 1 : ");
             System.out.println("TOKEN = " + token);
         } catch (Exception e) {
