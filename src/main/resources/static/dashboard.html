@@ -329,6 +329,19 @@
                 background: #1d4ed8;
             }
 
+            .modal-content input {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                font-size: 16px;
+                margin-top: 10px;
+            }
+
+            .modal-content button {
+                margin: 10px 5px 0 5px;
+            }
+
             /* --- Tables --- */
             table {
                 width: 100%;
@@ -544,12 +557,6 @@
                             id="checkBalanceAccountNumber"
                         />
                     </div>
-                    <!-- <button class="primary-btn" onclick="checkBalance()">
-                        Check Balance
-                    </button> -->
-                    <!-- <button class="primary-btn" onclick="loadAccounts()">
-                        Check Balance
-                    </button> -->
                     <button class="primary-btn" onclick="loadAccounts()">
                         Check Balance
                     </button>
@@ -567,6 +574,16 @@
                     <h2>Account Balance</h2>
                     <p id="balanceText"></p>
                     <button onclick="closeBalanceModal()">OK</button>
+                </div>
+            </div>
+            <div id="passwordModal" class="modal">
+                <div class="modal-content">
+                    <h2>Verify your identity</h2>
+                    <p>Enter your password</p>
+                    <input type="password" id="passwordInput" placeholder="Enter password">
+                    <br><br>
+                    <button onclick="submitPassword()">Submit</button>
+                    <button onclick="closePasswordModal()">Cancel</button>
                 </div>
             </div>
         </main>
@@ -611,6 +628,24 @@
                 }
             }
 
+            let selectedAccountNumber = null;
+
+            function showPasswordDialog(accountNumber) {
+                selectedAccountNumber = accountNumber;
+                document.getElementById("passwordInput").value = "";
+                document.getElementById("passwordModal").style.display = "flex";
+            }
+
+            function closePasswordModal() {
+                document.getElementById("passwordModal").style.display = "none";
+            }
+
+            function submitPassword() {
+                const password = document.getElementById("passwordInput").value;
+                closePasswordModal();
+                checkBalance(selectedAccountNumber,password);
+            }
+
             function showBalanceModal(balance) {
                 document.getElementById("balanceText").textContent = "₹ " + balance;
                 document.getElementById("balanceModal").style.display = "flex";
@@ -618,14 +653,6 @@
 
             function closeBalanceModal(){
                 document.getElementById("balanceModal").style.display = "none";
-            }
-
-            function showPasswordDialog(accountNumber) {
-                const password = prompt("Enter your password");
-                if(password == null) {
-                    return;
-                }
-                checkBalance(accountNumber,password);
             }
 
             // function to check the balance
