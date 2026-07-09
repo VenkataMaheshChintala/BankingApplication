@@ -283,6 +283,52 @@
                 background: var(--primary-light);
             }
 
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            }
+
+            .modal-content {
+                background: white;
+                padding: 30px;
+                width: 350px;
+                border-radius: 12px;
+                text-align: center;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+            }
+
+            .modal-content h2 {
+                color: #2563eb;
+                margin-bottom: 20px;
+            }
+
+            .modal-content p {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 25px;
+            }
+
+            .modal-content button {
+                padding: 10px 30px;
+                border: none;
+                border-radius: 8px;
+                background: #2563eb;
+                color: white;
+                cursor: pointer;
+            }
+
+            .modal-content button:hover {
+                background: #1d4ed8;
+            }
+
             /* --- Tables --- */
             table {
                 width: 100%;
@@ -515,6 +561,14 @@
                 <h1 class="page-title">Transaction History</h1>
                 <div class="card" id="userAccounts"></div>
             </div>
+
+            <div id="balanceModal" class="modal">
+                <div class="modal-content">
+                    <h2>Account Balance</h2>
+                    <p id="balanceText"></p>
+                    <button onclick="closeBalanceModal()">OK</button>
+                </div>
+            </div>
         </main>
 
         <script>
@@ -557,6 +611,15 @@
                 }
             }
 
+            function showBalanceModal(balance) {
+                document.getElementById("balanceText").textContent = "₹ " + balance;
+                document.getElementById("balanceModal").style.display = "flex";
+            }
+
+            function closeBalanceModal(){
+                document.getElementById("balanceModal").style.display = "none";
+            }
+
             function showPasswordDialog(accountNumber) {
                 const password = prompt("Enter your password");
                 if(password == null) {
@@ -584,7 +647,7 @@
                 const result = await response.json()
                 console.log("Response received");
                 if (result.status) {
-                    alert("Balance : " + result.balance);
+                    showBalanceModal(result.balance);
                 } else {
                     alert('Balance Check fetch failed : ' + response.message)
                 }
