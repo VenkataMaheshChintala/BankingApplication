@@ -35,11 +35,8 @@ public class userServiceImpl implements userService{
             if(passwordEncoder.matches(request.getPassword(),user.getPassword())) {
                 response.setSuccess(true);
                 response.setMessage("Login successful");
-//                response.setToken(jwtService.generateToken(user.getUsername()));
-                // debugging purpose
                 String token = jwtService.generateToken(user.getUsername());
                 response.setToken(token);
-                System.out.println(token);
             } else {
                 response.setSuccess(false);
                 response.setMessage("Incorrect password for username : " + user.getUsername());
