@@ -115,6 +115,7 @@ async function createAccount() {
         alert('Account creation failed: ' + result.message)
     }
 }
+
 function showpage(pageId, element) {
     const pages = document.querySelectorAll('.page')
     pages.forEach((page) => {
@@ -129,4 +130,10 @@ function showpage(pageId, element) {
     })
 
     element.classList.add('active')
+}
+
+function logout() {
+    localStorage.clear("token");
+    localStorage.clear("username");
+    window.location.href = "/login.html"
 }
