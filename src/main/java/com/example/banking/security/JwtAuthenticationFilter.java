@@ -27,26 +27,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             FilterChain filterChain
     ) throws ServletException, IOException {
 
+        System.out.println("REQUEST : " + request.getRequestURL());
         String authHeader = request.getHeader("Authorization");
         System.out.println("autheHeader : " + authHeader);
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            try {
-                if (jwtService.validateToken(token)) {
-                    String username = jwtService.extractUsername(token);
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(
-                                    username,
-                                    null,
-                                    Collections.emptyList()
-                            );
-                    SecurityContextHolder
-                            .getContext()
-                            .setAuthentication(authentication);
-                }
-            } catch (Exception e) {
-                System.out.println("Invalid JWT");
+            System.out.println("Token found");
+            if (jwtService.validateToken(token)) {
+                System.out.println("Valid token");
+                String username = jwtService.extractUsername(token);
+                System.out.println("Username : " + username);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                username,
+                                null,
+                                Collections.emptyList()
+                        );
+                SecurityContextHolder
+                        .getContext()
+                        .setAuthentication(authentication);
+                System.out.println("AUTHENTICATED: " + SecurityContextHolder.getContext().getAuthentication()
+                );
+            } else {
+                System.out.println("Invalid Token");
             }
         }
         filterChain.doFilter(request, response);

@@ -8,7 +8,7 @@ async function loadAccounts() {
             Authorization: 'Bearer ' + token,
         },
         body: JSON.stringify({
-            username: username,
+            userId: userid,
         }),
     })
 
@@ -44,7 +44,7 @@ async function login() {
 
         if (data.success) {
             localStorage.setItem('token', data.token)
-            localStorage.setItem('username', username)
+            localStorage.setItem('userid',data.userId)
             window.location.href = '/dashboard.html'
         } else {
             alert('Login failed : ' + data.message)

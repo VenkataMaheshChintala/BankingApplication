@@ -31,16 +31,19 @@ public class userServiceImpl implements userService{
             response.setSuccess(false);
             response.setMessage("No user exists with username : " + request.getUsername());
             response.setToken(null);
+            response.setUserId(0L);
         } else {
             if(passwordEncoder.matches(request.getPassword(),user.getPassword())) {
                 response.setSuccess(true);
                 response.setMessage("Login successful");
                 String token = jwtService.generateToken(user.getUsername());
                 response.setToken(token);
+                response.setUserId(user.getUserId());
             } else {
                 response.setSuccess(false);
                 response.setMessage("Incorrect password for username : " + user.getUsername());
                 response.setToken(null);
+                response.setUserId(0L);
             }
         }
         return response;

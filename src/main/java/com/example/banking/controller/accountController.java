@@ -62,15 +62,8 @@ public class accountController {
     }
 
     @PostMapping("/accounts")
-    public usernameRequestResponse getAccounts(@RequestBody usernameRequest usernameRequest) {
-        String username = usernameRequest.getUsername();
-        User user = userService.findByUserName(username);
-        List<Account> accounts = accountService.findByUserId(user.getUserId());
-        usernameRequestResponse response = new usernameRequestResponse();
-        response.setAccounts(accounts);
-        response.setMessage("Accounts fetched successfully");
-        response.setStatus(true);
-        return response;
+    public ListAccountResponse getAccounts(@RequestBody userIdRequest userIdRequest) {
+        return accountService.loadAccounts(userIdRequest.getUserId());
     }
 
 }

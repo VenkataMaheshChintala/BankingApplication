@@ -1,6 +1,6 @@
 async function loadAccounts() {
     const token = localStorage.getItem('token')
-    const username = localStorage.getItem('username')
+    const userid = localStorage.getItem('userid')
     const response = await fetch('/accountapi/accounts', {
         method: 'POST',
         headers: {
@@ -8,7 +8,7 @@ async function loadAccounts() {
             Authorization: 'Bearer ' + token,
         },
         body: JSON.stringify({
-            username: username,
+            userId: userid,
         }),
     })
 

@@ -30,6 +30,6 @@ public interface accountService {
 
     void changeStatus(changeStatusRequest request);
 
-    List<Account> findByUserId(long userId);
+    ListAccountResponse loadAccounts(long userId);
 
 }

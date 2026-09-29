@@ -15,6 +15,7 @@ import com.example.banking.repository.transactionRepository;
 import com.example.banking.dto.accountRegisterRequest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import com.example.banking.dto.accountNumberRequest;
 
@@ -216,9 +217,28 @@ public class accountServiceImpl implements accountService{
     }
 
     @Override
-    public List<Account> findByUserId(long userId) {
+    public ListAccountResponse loadAccounts(long userId) {
         User user = userService.findByUserId(userId);
         List<Account> accounts = accountRepository.findAllByuserId(user.getUserId());
-        return accounts;
+        ListAccountResponse response = new ListAccountResponse();
+        if(accounts.size() == 0) {
+            response.setMessage("User has no accounts");
+            response.setStatus(false);
+            response.setAccounts(null);
+        } else {
+            response.setStatus(true);
+            List<accountDataForLoading> accountsData = new ArrayList<>();
+            for(int i=0;i<accounts.size();i++) {
+                accountDataForLoading obj = new accountDataForLoading(
+                        accounts.get(i).getAccountNumber(),
+                        accounts.get(i).getAccountType(),
+                        accounts.get(i).getStatus()
+                );
+                accountsData.add(obj);
+            }
+            response.setAccounts(accountsData);
+            response.setMessage("Returned accounts successfully");
+        }
+        return response;
     }
 }

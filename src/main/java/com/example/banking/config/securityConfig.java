@@ -30,7 +30,7 @@ public class securityConfig {
                 "/dashboard.html",
                 "/dashboardstyle.css",
                 "/dashboardjs.js",
-                "/userapi/**"
+                "/userapi/**",
         ).permitAll().requestMatchers(
                 "/createaccount.html",
                 "/accountapi/**"
