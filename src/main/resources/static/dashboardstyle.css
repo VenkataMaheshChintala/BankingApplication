@@ -384,3 +384,64 @@ table tr:last-child td {
 .logout-btn:active {
     transform: translateY(0);
 }
+
+#accountstable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+#accountstable thead {
+    background: #f8fafc;
+}
+
+#accountstable th {
+    padding: 16px 20px;
+    text-align: left;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+#accountstable td {
+    padding: 18px 20px;
+    color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+#accountstable tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+#accountstable tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+#accountstable td:first-child {
+    font-weight: 600;
+    color: #1e293b;
+    letter-spacing: 0.5px;
+}
+
+#accountstable td:nth-child(2) {
+    font-weight: 500;
+}
+
+#accountstable td:nth-child(3) {
+    font-weight: 600;
+}
+
+#accountstable td:nth-child(3) {
+    color: #16a34a;
+}
+
+#accountstable tbody:empty::after {
+    content: "No accounts found";
+    display: table-row;
+    text-align: center;
+    color: #64748b;
+}
